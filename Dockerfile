@@ -13,4 +13,4 @@ RUN conda update --yes --name base --channel defaults conda \
  && conda env update --name=base --file=/environment.yml \
  && conda clean --yes --tarballs
 
-CMD "/bin/bash"
+CMD "sleep 86400"
