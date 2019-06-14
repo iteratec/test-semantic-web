@@ -7,9 +7,10 @@ COPY environment.yml /
 
 RUN apt-get update \
  && apt-get install -y procps \
- && apt autoclean
+ && apt-get autoclean
 
 RUN conda update --yes --name base --channel defaults conda \
- && conda env update --name=base --file=/environment.yml
+ && conda env update --name=base --file=/environment.yml \
+ && conda clean --yes --tarballs
 
 CMD "/bin/bash"
