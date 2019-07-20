@@ -4,24 +4,32 @@ import re
 import bz2
 import xml.etree.cElementTree as ET
 
-ART_FILTER = set(('Substantiv','Adjektiv','Verb','Adverb','Abkürzung'))
-ART_MATCHER = re.compile('Wortart\|(\w+)\|Deutsch.+')
+KIND_FILTER = set(('Substantiv','Adjektiv','Verb','Adverb','Abkürzung'))
+KIND_MATCHER = re.compile('Wortart\|(\w+)\|Deutsch')
+WORD_MATCHER = re.compile('==\s*(\w+).+Deutsch.+==')
 
-def get_art(text):
-  match_art = ART_MATCHER.search(text)
-  if not match_art:
+def get_kind(text):
+  match_kind = KIND_MATCHER.search(text)
+  if not match_kind:
       return None
-  return match_art.group(1)
+  return match_kind.group(1)
+
+def get_word(text):
+  match_word = WORD_MATCHER.search(text)
+  if not match_word:
+      return ''
+  return match_word.group(1)
     
 with bz2.open('/home/dlade/Downloads/dewiktionary-latest-pages-articles.xml.bz2', "rb") as f:
     for event, element in ET.iterparse(f, ('start','end')):
       if event == 'start' and element.tag.endswith('}text'):
         text = str(element.text).strip()
-        art = get_art(text)
-        if art in ART_FILTER:
+        kind = get_kind(text)
+        if kind in KIND_FILTER:
+            print('<{} word="{}">'.format(kind.lower(), get_word(text)))
             print(text)
-            print('-' * 100)
-            print()
+            print('</{}>'.format(kind))
+
 '''
   84179 Substantiv
   11441 Adjektiv
