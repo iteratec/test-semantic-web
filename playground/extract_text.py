@@ -6,7 +6,7 @@ import xml.etree.cElementTree as ET
 
 KIND_FILTER = set(('Substantiv','Adjektiv','Verb','Adverb','Abkürzung'))
 KIND_MATCHER = re.compile('Wortart\|(\w+)\|Deutsch')
-WORD_MATCHER = re.compile('==\s*(\w+).+Deutsch.+==')
+WORD_MATCHER = re.compile('==\s+([^\s]+).+Deutsch.+==')
 
 def get_kind(text):
   match_kind = KIND_MATCHER.search(text)
@@ -20,7 +20,6 @@ def get_word(text):
       return ''
   return match_word.group(1)
     
-#with bz2.open('/home/dlade/Downloads/litschi-page.xml.bz2', "rb") as f:
 with bz2.open('/home/dlade/Downloads/dewiktionary-latest-pages-articles.xml.bz2', "rb") as f:
     for event, element in ET.iterparse(f, ('start','end')):
       if event == 'start' and element.tag.endswith('text'):
