@@ -20,15 +20,22 @@ def get_word(text):
       return ''
   return match_word.group(1)
     
+#with bz2.open('/home/dlade/Downloads/litschi-page.xml.bz2', "rb") as f:
 with bz2.open('/home/dlade/Downloads/dewiktionary-latest-pages-articles.xml.bz2', "rb") as f:
     for event, element in ET.iterparse(f, ('start','end')):
-      if event == 'start' and element.tag.endswith('}text'):
-        text = str(element.text).strip()
+      if event == 'start' and element.tag.endswith('text'):
+        text = str(element.text)
         kind = get_kind(text)
         if kind in KIND_FILTER:
-            print('<{} word="{}">'.format(kind.lower(), get_word(text)))
+            # ignore children and add text after it
+            for child in element:
+                text += child.tail
+
+            tag = kind.lower()
+            word = get_word(text)
+            print('<{} word="{}">'.format(tag, word))
             print(text)
-            print('</{}>'.format(kind))
+            print('</{}>'.format(tag))
 
 '''
   84179 Substantiv
